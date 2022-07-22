@@ -48,6 +48,14 @@ public class Handler {
                 .body(BodyInserters.fromPublisher(findCardByIdUseCase.findCardById(id), Card.class))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
+    public Mono<ServerResponse> updateCard(ServerRequest serverRequest){
+
+        return serverRequest.bodyToMono(Card.class)
+                .flatMap(card -> createCardUseCase.saveCard(card))
+                .flatMap(card -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(card));
+    }
 
     /*public Mono<ServerResponse> deleteCardById(ServerRequest serverRequest){
         var id = serverRequest.pathVariable("id");
