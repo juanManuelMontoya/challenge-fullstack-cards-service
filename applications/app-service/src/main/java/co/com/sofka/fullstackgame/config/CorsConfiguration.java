@@ -1,5 +1,6 @@
 package co.com.sofka.fullstackgame.config;
 
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.EnableWebFlux;
@@ -14,3 +15,5 @@ public class CorsConfiguration implements WebFluxConfigurer {
                 .allowedOrigins("*");
     }
 }
+
+
