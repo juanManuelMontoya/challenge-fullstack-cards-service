@@ -28,7 +28,6 @@ public class Handler {
      Logger logger = LoggerFactory.getLogger(Handler.class);
 
      public Mono<ServerResponse> getCards(ServerRequest serverRequest){
-
          return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                  .body(BodyInserters.fromPublisher(allCardsUseCase.getAllCards(), Card.class))
                  .switchIfEmpty(ServerResponse.notFound().build());
