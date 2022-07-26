@@ -19,7 +19,6 @@ public RouterFunction<ServerResponse> routerFunction(Handler handler) {
     return route(GET("/api/card"), handler::getCards)
             .andRoute(GET("/api/card/{id}"), handler::getCardById)
             .andRoute(POST("/api/card/create"), handler::createCard)
-            .andRoute(POST("/api/card/update"), handler::updateCard)
-            .filter(HandlerFilterFunction.ofResponseProcessor(CrossOrigin.DEFAULT_ORIGINS));
+            .andRoute(POST("/api/card/update"), handler::updateCard);
     }
 }
