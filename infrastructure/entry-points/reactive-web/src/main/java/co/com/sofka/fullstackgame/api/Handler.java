@@ -36,26 +36,34 @@ public class Handler {
     public Mono<ServerResponse> createCard(ServerRequest serverRequest){
 
         return serverRequest.bodyToMono(Card.class)
-                .flatMap(card -> createCardUseCase.saveCard(card))
+                .flatMap(createCardUseCase::saveCard)
                 .flatMap(card -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(card));
+                        .bodyValue(card))
+                .onErrorResume(this::onErrorResume);
     }
 
     public Mono<ServerResponse> getCardById(ServerRequest serverRequest){
          var id = serverRequest.pathVariable("id");
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromPublisher(findCardByIdUseCase.findCardById(id), Card.class))
-                .switchIfEmpty(ServerResponse.notFound().build());
+                .onErrorResume(this::onErrorResume);
     }
     public Mono<ServerResponse> updateCard(ServerRequest serverRequest){
-
         return serverRequest.bodyToMono(Card.class)
-                .flatMap(card -> createCardUseCase.saveCard(card))
+                .flatMap(createCardUseCase::saveCard)
                 .flatMap(card -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(card));
+                        .bodyValue(card))
+                .onErrorResume(this::onErrorResume);
+    }
+
+    private Mono<ServerResponse> onErrorResume(Throwable error) {
+        return ServerResponse.status(error.getMessage().contains("doesn't exists") ? 404 : 409)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(error.getMessage()));
     }
 
     /*public Mono<ServerResponse> deleteCardById(ServerRequest serverRequest){
